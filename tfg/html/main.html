@@ -1,0 +1,426 @@
+<html>
+<head>
+  <!--
+    <script src="https://cdn.jsdelivr.net/npm/vexflow/build/cjs/vexflow.js"></script>
+ -->
+
+    <style>
+
+.container{
+
+    display:block;
+    position:absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%; 
+    overflow:hidden;  
+}
+
+.containervex {
+    display:block;
+    position:absolute;
+    left: 0px;
+    top: 50px;
+    width: 800px;
+    height: 800px;   
+    overflow-y: scroll;
+    overflow-x: scroll;
+    transform-origin: 0 0;
+}
+
+.vexbox {
+    display:block;
+    position:absolute;
+    left: 0px;
+    top: 50px;
+    width: 800px;
+    height: 800px;   
+    overflow-y: none;
+    overflow-x: none;
+    transform-origin: 0 0;
+}
+
+.menu {
+    display:block;
+    position:absolute;
+    left: 700px;
+    top: 0px;
+    width: 100px;
+    height: 600px;   
+    border: 1px solid #808080;
+}
+
+.menu_item {
+    display:relative;
+    position:relative;
+    float:left;    
+    width: 100px;
+    height: 40px;   
+    border: 1px solid gray;
+    line-height: 40px;
+    text-align: center;
+}
+
+.body{
+    margin:0px;
+    padding:0px;
+}
+
+.back_menu
+  {
+      background-color: #000;
+      width:100%;
+      height:43px;
+  }
+
+</style>
+
+<script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+
+<script src="PythonCom.js"></script>
+<script src="LayoutManager.js"></script>
+<script src="ScoreManager.js"></script>
+<script src="NotesProducer.js"></script>
+<script src="ManagerSelection.js"></script>
+<script src="Control.js"></script>
+
+
+<script src="vexflow.js"></script>
+
+<script>
+     const { Renderer, Stave, StaveNote, Voice, Formatter, StaveConnector, Beam, Dot,Accidental } = Vex.Flow;
+</script>
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script> -->
+
+
+<script src="jquery/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="jquery/jquery-ui.css">
+<script src="jquery/jquery-ui.min.js"></script>
+
+
+<link rel="stylesheet" href="css/superfish.css">
+<script src="js/superfish.js"></script>
+
+
+
+
+</head>
+<body class=".body">
+
+<div id="containervex" class="containervex">  
+  <div id="vexbox" class="vexbox"> </div>
+</div>
+
+ 
+  
+  <div id="back_menu" class="back_menu">
+  <div id="menu">
+    <ul class="sf-menu">
+      <li><a href="#" style="font-family: 'Arial'" >File</a>
+        <ul>
+          <li><a href="#" onclick="g_control.LoadFile();" style="cursor: pointer; font-family: 'Arial'">Open</a></li>
+          <li><a href="#"onclick="g_control.Save();" style="cursor: pointer; font-family: 'Arial'" >Save</a></li>
+          <li><a href="#"onclick="g_control.SaveAs();" style="cursor: pointer; font-family: 'Arial'" >Save As</a></li>
+          <li><a href="#" id="SelectPlugin" onclick='$("#dialog4").dialog("open");' style="cursor: pointer;font-family: 'Arial'">Select Converter Plug-in</a></li>
+
+        </ul>
+
+
+      <li><a href="#"  style="cursor: pointer; font-family: 'Arial'">Edit</a>
+        <ul>
+          <li><a href="#" onclick="g_selection_manager.SelectAll();" style="cursor: pointer; font-family: 'Arial'">Select All</a></li>
+          <li><a href="#" onclick="g_selection_manager.UnselectAll();" style="cursor: pointer; font-family: 'Arial'">Unselect All</a></li>
+        </ul>
+      </li>
+
+      <li><a href="#"  style="cursor: pointer; font-family: 'Arial'">Sound Control</a>
+        <ul>
+          <li><a href="#" onclick="g_control.Play();" style="cursor: pointer;font-family: 'Arial'">Play</a></li>
+          <li><a href="#" onclick="g_control.Stop();" style="cursor: pointer;font-family: 'Arial'">Stop</a></li>
+        </ul>
+      </li>
+
+
+      <li><a href="#"  style="cursor: pointer;font-family: 'Arial'">Score Control</a>
+        <ul>
+          <li><a href="#" id="IntervalChange" onclick='$("#dialog1").dialog("open");' style="cursor: pointer;font-family: 'Arial'">Interval Change</a></li>
+           <li><a href="#" onclick="g_control.MirrorEffect()" style="cursor: pointer;font-family: 'Arial'">Mirror Melody</a></li>
+           <li><a href="#" onclick="g_control.RemoveNotes()" style="cursor: pointer;font-family: 'Arial'">Remove Notes</a></li>
+           <li><a href="#" id="AddNote" onclick='$("#dialog2").dialog("open");' style="cursor: pointer;font-family: 'Arial'">Add Note</a></li>
+           <li><a href="#" id="change_time_signature_at_start" onclick='$("#dialog3").dialog("open");' style="cursor: pointer;font-family: 'Arial'">Change time signature at the start</a></li>
+           <li><a href="#" id="change_key_signature_at_start" onclick='$("#dialog5").dialog("open");' style="cursor: pointer;font-family: 'Arial'">Change key signature at the start</a></li>
+
+
+
+
+
+
+          </ul>
+      </li>
+
+    </ul>
+  </div>
+</div>
+
+</div>
+
+<div id="dialog1" title="Interval Change: ">
+  <p>Number of semitones to transpose:</p>
+  <input type="text" id="intervalValue" name="intervalValue" placeholder="Should be integers [-12,12]">
+</div>
+
+<div id="dialog2" title="Add Note">
+  <p>Note to add</p>
+ 
+  <select name="AddNoteSelectDuration"  id="AddNoteSelectDuration">
+    <option value="whole">Whole Note</option>
+    <option value="quarter">Quarter Note</option>
+    <option value="half">Half Note</option>
+    <option value="eighth">Eighth Note</option>
+    <option value="16th">Sixteenth Note</option>
+    <option value="32nd">Thirty-second Note</option>
+  </select>
+
+  <select name="AddNoteSelect"  id="AddNoteSelect">
+    <option value="A">A</option>
+    <option value="B">B</option>
+    <option value="C">C</option>
+    <option value="D">D</option>
+    <option value="E">E</option>
+    <option value="F">F</option>
+    <option value="G">G</option>
+   
+  </select>
+
+  <select name="AddNoteSelectOctave"  id="AddNoteSelectOctave">
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+   
+  </select>
+
+  <select name="AddNoteSelectAccidental"  id="AddNoteSelectAccidental">
+    <option value="">-</option>
+    <option value="#">Sharp (#)</option>
+    <option value="-">Flat (b)</option>
+  </select>
+
+
+
+</div>
+
+
+
+<div id="dialog3" title="Time Signature:  ">
+  <p>What time signature do you want?</p>
+  <input type="text" id="change_time_value" name="change_time_value" placeholder="Time signature (e.g., 3/4, 6/8)">
+</div>
+
+
+
+<div id="dialog4" title="Choose plug-in ">
+  <p>Write the name of the plug-in you want to apply</p>
+  <input type="text" id="Selected_plugin" name="Selected_plugin" placeholder="Enter plug-in name">
+</div>
+
+
+<div id="dialog5" title="Key Signature: ">
+  <p>What Key signature do you want?</p>
+ 
+  <select name="keyselect"  id="keyselect">
+    <option value="0">C/Am</option>
+    <option value="1">G/Em</option>
+    <option value="2">D/Bm</option>
+    <option value="3">A/F#m</option>
+    <option value="4">E/C#m</option>
+    <option value="5">B/G#m</option>
+    <option value="6">F#/D#m</option>
+    <option value="-1">F/Dm</option>
+    <option value="-2">Bb/Gm</option>
+    <option value="-3">Eb/Cm</option>
+    <option value="-4">Ab/Fm</option>
+    <option value="-5">Db/Bbm</option>
+    <option value="-6">Gb/Ebm</option>
+  </select>
+</div>
+
+ <script>
+            
+        var g_python_com = new PythonCom();
+        var g_control = new Control();
+        var g_score_manager = new ScoreManager();
+        var g_layout_manager = new LayoutManager();
+        var g_selection_manager = new ManagerSelection();
+
+
+        g_control.m_python_com = g_python_com;
+        g_python_com.m_control = g_control;
+        g_control.m_score_manager = g_score_manager;
+
+        g_layout_manager.m_score_manager = g_score_manager;
+        g_score_manager.m_layout_manager = g_layout_manager;
+
+       
+        g_selection_manager.m_score_manager = g_score_manager;
+        g_score_manager.m_selection_manager = g_selection_manager;
+
+        g_layout_manager.Start();
+
+
+</script>
+
+
+<script>
+
+  var isCtrlPressed = false;
+
+
+    $(document).ready(function() {
+
+      $('.sf-menu').superfish();
+
+      $(window).resize(function(){
+        // This function will be triggered whenever the window is resized
+        // You can put your code to handle the resize event here
+        g_layout_manager.Resize();
+      });  
+
+      g_layout_manager.Resize();
+
+      $(document).keydown(function(event) {
+            if (event.which === 17) { // 17 is the key code for Ctrl
+                isCtrlPressed = true;
+                console.log('Ctrl key is pressed');
+            }
+        });
+
+        // Event handler for keyup
+        $(document).keyup(function(event) {
+            if (event.which === 17) { // 17 is the key code for Ctrl
+                isCtrlPressed = false;
+                console.log('Ctrl key is released');
+            }
+        });
+
+
+    });
+
+      // Initialize the jQuery UI dialog
+  $("#dialog1").dialog({
+      autoOpen: false,
+      modal: true,
+      buttons: {
+          "Okay": function() {
+              var inputValue = $("#intervalValue").val();
+              console.log("Value entered: " + inputValue); // Print to console
+              $(this).dialog("close");
+              var num = parseInt(inputValue,10);
+             
+              g_control.IntervalChange(num);
+          },
+          "Cancel": function() {
+              $(this).dialog("close");
+          }
+      }
+
+    });
+
+    $("#dialog2").dialog({
+      autoOpen: false,
+      modal: true,
+      buttons: {
+          "Okay": function() {
+              var inputValue = $("#AddNoteSelect").val();
+              var inputDuration = $("#AddNoteSelectDuration").val();
+              var inputOctave = $("#AddNoteSelectOctave").val();
+              var inputAccidental = $("#AddNoteSelectAccidental").val();
+
+                    console.log("Value entered: " + inputValue); // Print to console
+              $(this).dialog("close");
+
+             
+              g_control.AddNote(inputValue,inputDuration,inputOctave, inputAccidental);
+          },
+          "Cancel": function() {
+              $(this).dialog("close");
+          }
+      }
+
+    });
+
+
+    $("#dialog3").dialog({
+      autoOpen: false,
+      modal: true,
+      buttons: {
+          "Okay": function() {
+              var inputtime_sig = $("#change_time_value").val();
+              console.log("Value entered: " + inputtime_sig); // Print to console
+              $(this).dialog("close");
+             
+              g_control.change_time_signature_at_start(inputtime_sig);
+          },
+          "Cancel": function() {
+              $(this).dialog("close");
+          }
+      }
+
+    });
+
+
+
+    $("#dialog4").dialog({
+      autoOpen: false,
+      modal: true,
+      buttons: {
+          "Okay": function() {
+              var inputname = $("#Selected_plugin").val();
+              console.log("Name entered: " + inputname); // Print to console
+              $(this).dialog("close");
+
+              g_control.SelectPlugin(inputname);
+          },
+          "Cancel": function() {
+              $(this).dialog("close");
+          }
+      }
+
+    });
+
+    $("#dialog5").dialog({
+      autoOpen: false,
+      modal: true,
+      buttons: {
+          "Okay": function() {
+              var inputkey_sig = $("#keyselect").val();
+              console.log("Value entered: " + inputkey_sig); // Print to console
+              $(this).dialog("close");
+              var num = parseInt(inputkey_sig,10);
+
+             
+              g_control.change_key_signature_at_start(num);
+          },
+          "Cancel": function() {
+              $(this).dialog("close");
+          }
+      }
+
+    });
+
+    /*
+  // Bind click event to the Move Down menu item
+  $("#IntervalChange").click(function(event) {
+      event.preventDefault();
+      $("#dialog").dialog("open");
+  });
+  */
+    </script>
+
+</body>
+</html>
