@@ -8,7 +8,7 @@ REQUERIMENTOS:
 - Para probar la selección de nuevos plug-ins se deberá cambiar esta ruta:
            file_path = f'C:\\Users\\adasa\\Documents\\UPC\\TFG\\botones_desplegables\\tfg (3)\\tfg\\plugins\\{name}.py'  
 
-#TFG: Ada Salvador Ávalos
+# TFG: Ada Salvador Ávalos
 Complete code of the entire final degree project. With files to prove it.
 
 REQUIREMENTS:
