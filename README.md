@@ -1,3 +1,13 @@
+# TFG: Ada Salvador Ávalos
+Complete code of the entire final degree project. With files to prove it.
+
+REQUIREMENTS:
+- WSL
+- WaoN available at https://kichiki.github.io/waon/. If you want to try the transformations from mp3 to MusicXML. You must download the WaoN program and change its location so that it is in the WSL:
+ linux_command = f"/home/home/WaoN/waon -i {file_source} -o {file_target}"
+- To test the selection of new plugins, you must change this path:
+ file_path = f'C:\\Users\\adasa\\Documents\\UPC\\TFG\\dropdown_buttons\\tfg (3)\\tfg\\plugins\\{name}.py'
+
 # TFG: Ada Salvador Avalos
 Código completo de todo el trabajo final de carrera. Con archivos para probarlo. 
 
@@ -8,12 +18,3 @@ REQUERIMENTOS:
 - Para probar la selección de nuevos plug-ins se deberá cambiar esta ruta:
            file_path = f'C:\\Users\\adasa\\Documents\\UPC\\TFG\\botones_desplegables\\tfg (3)\\tfg\\plugins\\{name}.py'  
 
-# TFG: Ada Salvador Ávalos
-Complete code of the entire final degree project. With files to prove it.
-
-REQUIREMENTS:
-- WSL
-- WaoN available at https://kichiki.github.io/waon/. If you want to try the transformations from mp3 to MusicXML. You must download the WaoN program and change its location so that it is in the WSL:
- linux_command = f"/home/home/WaoN/waon -i {file_source} -o {file_target}"
-- To test the selection of new plugins, you must change this path:
- file_path = f'C:\\Users\\adasa\\Documents\\UPC\\TFG\\dropdown_buttons\\tfg (3)\\tfg\\plugins\\{name}.py'
