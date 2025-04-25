@@ -1,7 +1,7 @@
-# TFG: Ada Salvador Ávalos
-Complete code of the entire final bachelor's degree project. With files to try it.
+# TFG: Ada Salvador Avalos
+Full source code of my Bachelor's final project, including all necessary files to run it. Currently compatible with Windows only.
 
-REQUIREMENTS for Windows:
+REQUIREMENTS:
 - WSL
 - WaoN available at https://kichiki.github.io/waon/. If you want to try the transformations from mp3 to MusicXML. You must download the WaoN program and change its location so that it is in the WSL:
 ````
@@ -14,9 +14,9 @@ REQUIREMENTS for Windows:
 ````
 
 # TFG: Ada Salvador Avalos
-Código completo de todo el trabajo final de carrera. Con archivos para probarlo. 
+Código fuente completo de mi proyecto final de grado, incluyendo todos los archivos necesarios para ejecutarlo. Actualmente compatible solo con Windows.
 
-REQUERIMENTOS para Windows:
+REQUERIMENTOS:
 - WSL
 - WaoN disponible en https://kichiki.github.io/waon/ . Si se quieren probar las transformaciones de mp3 a MusicXML. Se deberá descargar el programa WaoN y cambiar la ubicación de este para que esté en la WSL:
 ````
