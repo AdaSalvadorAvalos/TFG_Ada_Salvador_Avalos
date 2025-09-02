@@ -1,0 +1,8 @@
+ffmpeg
+music21
+pydub
+numpy
+librosa
+pretty_midi
+PyQt5
+pygame
