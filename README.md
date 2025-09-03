@@ -15,7 +15,7 @@ This project transcribes audio files (MP3 or MIDI) into MusicXML scores and prov
 Automatic musical transcription remains a challenging research area. This tool allows users to review and correct possible transcription errors before saving, ensuring greater accuracy.
 
 ## Demonstration Video
-[![Demo Video](assets/demo_img.png)](assets/demonstration_video.mp4)
+[![Demo Video](assets/demo_img.png)]([assets/demonstration_video.mp4](https://youtu.be/34K5PG9SdkM))
 
 
 ## Installation
