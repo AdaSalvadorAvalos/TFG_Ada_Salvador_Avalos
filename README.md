@@ -10,9 +10,16 @@ This project transcribes piano monophonic audio files (MP3 or MIDI) into MusicXM
 - Edit scores by inserting, deleting, or modifying notes and other musical parameters.  
 - Apply built-in filters or import custom Python plugins for new effects.  
 - Listen to changes in real-time through the interface.  
-- Interface built with JavaScript, SVG, HTML, jQuery, [VexFlow](https://github.com/0xfe/vexflow), and [Superfish.js](https://github.com/joeldbirch/superfish) (including MegaFish for advanced dropdown menus); core engine in Python. 
 
-Automatic musical transcription remains a challenging research area. This tool allows users to review and correct possible transcription errors before saving, ensuring greater accuracy.
+> **Note:** Automatic musical transcription remains a challenging research area. This tool allows users to review and correct possible transcription errors before saving, ensuring greater accuracy.
+
+## Built With
+
+- **Core Engine:** Python (`music21`, `pygame`, `PyQt5`)  
+- **Frontend:** JavaScript, HTML, SVG, jQuery  
+- **Score Rendering:** [VexFlow](https://github.com/0xfe/vexflow)  
+- **UI Enhancements:** [Superfish.js](https://github.com/joeldbirch/superfish) + MegaFish menus  
+
 
 ## Demonstration Video
 Watch the project in action in this short demo:
@@ -78,4 +85,4 @@ Once installed, you can launch the application and use the menu options shown in
 
 - Transform the application into a web service.  
 - Integrate AI-based technologies to improve transcription accuracy.
-- Add support for polyphony (multiple simultaneous notes).  
+- Add support for polyphony (multiple simultaneous notes or instruments).  

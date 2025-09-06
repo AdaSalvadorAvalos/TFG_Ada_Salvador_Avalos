@@ -36,7 +36,15 @@ class Converter(ConverterBase):
 
       Attributes:
             name (str): Identifier of the plugin, set to "ffmpeg_plugin2".
+      
+      Methods:
+        Convert(file_source, file_target):
+            Performs the full audio-to-MusicXML conversion pipeline.
+        ConvertToMidi(file_source, file_target):
+            Converts a WAV file to MIDI via WaoN using WSL.
       """
+
+      
       def __init__(self):
             """Initialize the converter and set its plugin name."""
             super().__init__('ffmpeg_plugin2')

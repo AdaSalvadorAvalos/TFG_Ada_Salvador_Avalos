@@ -38,6 +38,31 @@ class MainControl():
         plugin_load (str): The currently selected converter plugin (default 'ffmpeg').
         score (music21.stream.Score): The current MusicXML score loaded or created.
         m_current_file_name (str): Path to the current MusicXML file.
+    
+    Main Methods:
+
+    - __init__(): Initializes pygame and sets the default converter plugin.
+    - SelectPlugin(name): Select a converter plugin for audio-to-MusicXML conversion.
+    - Save(): Save the current score to the existing MusicXML file.
+    - SaveAs(filename): Save the current score under a new file name.
+    - Stop(): Stop MIDI playback.
+    - Play(): Play the current score as MIDI using pygame.
+    - GenerateGUID(): Generate a unique identifier (GUID) for notes.
+    - GetNote(note_id): Retrieve a note from the score by its internal ID.
+    - NoteChange(note, num): Transpose a single note by a specified interval.
+    - IntervalChange(num, selection): Transpose multiple notes by a given interval.
+    - NoteRemove(note): Remove a note from its measure.
+    - RemoveNotes(selection): Remove multiple notes from the score.
+    - GetMeasure(p_measure_id): Retrieve a measure from the score by its number.
+    - calculate_pitch(p_y, p_height, staff): Estimate a pitch based on graphical coordinates.
+    - AddNote(p_measure_id, p_x, p_y, p_width, p_height, p_note, staff, duration, octave, accidental):
+    Insert a new note into a measure at a specific position.
+    - reverse_measures(part): Reverse the order of measures in a part.
+    - MirrorEffect(): Apply a mirror effect by reversing the score melody.
+    - change_time_signature_at_start(new_time_sig): Replace the starting time signature.
+    - change_key_signature_at_start(new_key_sig): Replace the starting key signature.
+    - GetJSON(): Generate a JSON representation of the current score, including notes, measures, time, and key signature.
+    - LoadFile(name): Load a MusicXML, MP3, or MIDI file into the score, converting to MusicXML if necessary.
     """
     def __init__(self):
         """Initialize pygame and set the default converter plugin."""
