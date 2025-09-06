@@ -30,13 +30,13 @@ Watch the project in action in this short demo:
 ## Installation
 > **Note:** Currently compatible with **Windows only**.
 
-1. Install [WSL (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install) by following the instructions on the official page.
-2. Install [WaoN](https://kichiki.github.io/waon/).
+1. Install [WSL (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install) and follow the official instructions to set it up.
+2. Install [WaoN](https://kichiki.github.io/waon/) following the instructions on the official page.
 3. Install the required Python packages by running:
 
-````
+```bash
 pip install -r requirements.txt
-````
+```
 
 ## Usage
 
