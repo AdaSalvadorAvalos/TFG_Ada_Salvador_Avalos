@@ -1,3 +1,15 @@
+"""
+converterFFMPEG2.py
+
+This module implements the Converter class, for audio-to-MusicXML conversion
+using ffmpeg, WaoN (via WSL), and the music21 library.
+
+It provides functionality to:
+- Convert MP3 or other audio files into WAV format using ffmpeg.
+- Generate MIDI files from WAV using WaoN (through WSL) and librosa/pretty_midi as fallback.
+- Parse the resulting MIDI file into a MusicXML score with music21.
+- Save the final MusicXML file for use in the interactive transcription interface.
+"""
 import subprocess
 from converterBase import ConverterBase
 import ffmpeg
@@ -13,11 +25,37 @@ import pretty_midi
 import numpy as np
 
 class Converter(ConverterBase):
+      """
+      Converter for handling MP3 → WAV → MIDI → MusicXML conversion.
+
+      This class extends the base Converter class and defines a pipeline that:
+      1. Uses ffmpeg to convert MP3 files into WAV.
+      2. Runs WaoN (via WSL) to convert WAV into MIDI.
+      3. Parses the MIDI file with music21 to create a score.
+      4. Saves the score as MusicXML for downstream processing.
+
+      Attributes:
+            name (str): Identifier of the plugin, set to "ffmpeg_plugin2".
+      """
       def __init__(self):
+            """Initialize the converter and set its plugin name."""
             super().__init__('ffmpeg_plugin2')
      
       
       def Convert(self, file_source, file_target):
+            """
+            Convert an audio file to MusicXML.
+
+            Args:
+                  file_source (str): Path to the input audio file (e.g., MP3).
+                  file_target (str): Path to the output MusicXML file.
+
+            Workflow:
+                  - Convert the input file to WAV using ffmpeg.
+                  - Convert the WAV to MIDI with WaoN (via WSL).
+                  - Parse the MIDI into a music21 score.
+                  - Save the score as MusicXML at 'file_target'.
+            """
             try:
                   file_name, file_extension = os.path.splitext(file_target)
                   # Use ffmpeg to convert MP3 to WAV
@@ -44,7 +82,18 @@ class Converter(ConverterBase):
                   print("An error occurred:", e)
 
       def ConvertToMidi(self, file_source, file_target):
-           
+            """
+            Convert a WAV file to MIDI using WaoN and librosa/pretty_midi fallback.
+
+            Args:
+                  file_source (str): Path to the input WAV file.
+                  file_target (str): Path to the output MIDI file.
+
+            Workflow:
+                  - Executes WaoN (via WSL) to generate a MIDI file from the WAV input.
+                  - As a fallback, applies librosa's pYIN pitch estimation and pretty_midi
+                  to generate a MIDI approximation.
+            """
             file_source = file_source.replace("C:", "/mnt/c")
             file_source = file_source.replace("\\", "/")
 

@@ -1,3 +1,30 @@
+"""
+main.py
+
+Main application script for the Interactive MusicXML Transcriber and Editor.
+
+This module launches a PyQt5-based desktop application with an embedded
+QWebEngineView (Chromium-based) to display the HTML/JavaScript interface.
+It provides functionality for loading, editing, and saving MusicXML scores
+derived from MP3 or MIDI files.
+
+Communication between Python and JavaScript is handled via a JSON-based
+bridge (PythonBridge), allowing the web interface to trigger actions
+in Python and vice versa. All updates to the interface are executed
+through a single method ('g_python_com.HandleMessage') for consistency
+and easier future adaptation to a web service.
+
+Classes:
+    PythonBridge(QObject):
+        Handles incoming JSON messages from JavaScript and dispatches
+        events to the appropriate methods in the main application window.
+
+    WebViewWindow(QMainWindow):
+        Main window that embeds the web interface. Handles UI actions
+        such as loading files, saving, editing notes, applying transformations,
+        and communicating updates to JavaScript.
+"""
+
 import os
 import json
 
@@ -8,8 +35,22 @@ from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtWebChannel import QWebChannel
 
 class PythonBridge(QObject):
+    """
+    Facilitates communication between Python and JavaScript.
+
+    Inherits from PyQt5's QObject. The 'handleMessage' method receives messages
+    from JavaScript as JSON strings and dispatches them to the appropriate
+    methods in the main application window. Acts as an event dispatcher
+    based on the 'id' field in the received JSON.
+
+    Methods:
+        handleMessage(message):
+            Parses a JSON message from JavaScript and calls the corresponding
+            method in the 'WebViewWindow' instance.
+    """
     @pyqtSlot(str)
     def handleMessage(self, message):
+        """Handle a JSON message from JavaScript and dispatch the corresponding event."""
         print(f"Message from JavaScript: {message}")
         obj = json.loads(message)
 
@@ -42,6 +83,39 @@ class PythonBridge(QObject):
 
 
 class WebViewWindow(QMainWindow):
+    """
+    Main application window with embedded web interface.
+
+    Inherits from PyQt5's QMainWindow. Embeds a QWebEngineView to display the
+    HTML/JavaScript interface. Handles all UI interactions, including:
+        - Loading and saving score files.
+        - Sending commands to the JavaScript interface via 'executeJavaScript'.
+        - Adding, removing, or modifying notes.
+        - Changing time and key signatures.
+        - Plugin selection and interval editing.
+
+    Methods:
+        executeJavaScript(js_code):
+            Sends JavaScript code to the embedded web view for execution.
+        LoadFile():
+            Opens a file dialog to select a score file and sends it to the interface.
+        SaveAs():
+            Opens a file dialog to save the current score.
+        IntervalChange(num, selection):
+            Updates note intervals in the score and refreshes the interface.
+        SelectPlugin(name):
+            Selects a converter plugin for transformations.
+        AddNote(...):
+            Adds a note to the score and updates the interface.
+        MirrorEffect():
+            Mirrors selected notes in the score and updates the interface.
+        change_time_signature_at_start(new_time_sig):
+            Changes the starting time signature of the score.
+        change_key_signature_at_start(new_key_sig):
+            Changes the starting key signature of the score.
+        RemoveNotes(selection):
+            Removes selected notes from the score.
+    """
     def __init__(self):
         super().__init__()
 
@@ -92,21 +166,46 @@ class WebViewWindow(QMainWindow):
 
 
     def IntervalChange(self,num,selection):
+        """
+        Update note intervals for the selected notes in the score.
+
+        Args:
+            num (int): Interval value to apply.
+            selection (list): Selected notes or elements to modify.
+        """
         json_code = self.m_main_control.IntervalChange(num,selection)
         command = f"g_python_com.HandleMessage('OnLoadFile','{json_code}','','')"
         self.executeJavaScript(command)
 
     def SelectPlugin(self,name):
+        """
+        Select a converter plugin for transformations.
+
+        Args:
+            name (str): Name of the plugin to select.
+        """
         self.m_main_control.SelectPlugin(name)
         command = f"g_python_com.HandleMessage('alert','Plugin updated','','')"
         self.executeJavaScript(command)
 
     def change_time_signature_at_start(self,new_time_sig):
+        """
+        Change the starting time signature of the score.
+
+        Args:
+            new_time_sig (str): New time signature (e.g., "4/4").
+        """
         json_code = self.m_main_control.change_time_signature_at_start(new_time_sig)
         command = f"g_python_com.HandleMessage('OnLoadFile','{json_code}','','')"
         self.executeJavaScript(command)
 
     def change_key_signature_at_start(self,new_key_sig):
+        """
+        Change the starting key signature of the score.
+
+        Args:
+            new_key_sig (int): New key signature (number of sharps or flats).
+        """
         json_code = self.m_main_control.change_key_signature_at_start(new_key_sig)
         command = f"g_python_com.HandleMessage('OnLoadFile','{json_code}','','')"
         self.executeJavaScript(command)
@@ -114,16 +213,37 @@ class WebViewWindow(QMainWindow):
 
 
     def RemoveNotes(self,selection):
+        """
+        Remove selected notes from the score and update the interface.
+
+        Args:
+            selection (list): Notes or elements to remove.
+        """
         json_code = self.m_main_control.RemoveNotes(selection)
         command = f"g_python_com.HandleMessage('OnLoadFile','{json_code}','','')"
         self.executeJavaScript(command)
 
     def AddNote(self,p_measure_id,p_x,p_y,p_width,p_height,p_note,staff,duration,octave, accidental):
+        """
+        Add a new note to the score and update the interface.
+
+        Args:
+            p_measure_id (int): Measure number where the note is added.
+            p_x, p_y, p_width, p_height (float): Coordinates and size for placement.
+            p_note (str): Note name (e.g., "C").
+            staff (int): Staff number for the note.
+            duration (float): Duration in beats.
+            octave (int): Octave of the note.
+            accidental (str): Accidental symbol, if any (e.g., "#", "b").
+        """
         json_code = self.m_main_control.AddNote(p_measure_id,p_x,p_y,p_width,p_height,p_note,staff,duration,octave,accidental)
         command = f"g_python_com.HandleMessage('OnLoadFile','{json_code}','','')"
         self.executeJavaScript(command)
 
     def MirrorEffect(self):
+        """
+        Apply a mirror effect to the selected notes and update the interface.
+        """
         json_code = self.m_main_control.MirrorEffect()
         command = f"g_python_com.HandleMessage('OnLoadFile','{json_code}','','')"
         self.executeJavaScript(command)
@@ -136,6 +256,11 @@ class WebViewWindow(QMainWindow):
 
     
     def SaveAs(self):
+        """
+        Open a save file dialog to save the current score to a chosen location.
+
+        Displays a success or error message using QMessageBox.
+        """
         try:
             
             path = self.show_save_file_dialog()
@@ -147,7 +272,12 @@ class WebViewWindow(QMainWindow):
 
 
     def LoadFile(self):
+        """
+        Open a file dialog to select an existing score file and load it
+        into the interface.
 
+        Sends the score data to the JavaScript side using 'g_python_com.HandleMessage'.
+        """
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.ExistingFile)
         file_dialog.setNameFilter("All Files (*)")
@@ -165,6 +295,12 @@ class WebViewWindow(QMainWindow):
 
 
     def executeJavaScript(self, js_code):
+        """
+        Execute JavaScript code in the embedded web interface.
+
+        Args:
+            js_code (str): JavaScript code to run in the QWebEngineView.
+        """
         # Define the JavaScript function call with parameter
            
         # Execute the JavaScript code
@@ -172,6 +308,12 @@ class WebViewWindow(QMainWindow):
 
 
 if __name__ == "__main__":
+    """
+    Application entry point.
+
+    Initializes the QApplication, creates the main WebViewWindow,
+    and starts the PyQt event loop.
+    """
     import sys
 
     app = QApplication(sys.argv)

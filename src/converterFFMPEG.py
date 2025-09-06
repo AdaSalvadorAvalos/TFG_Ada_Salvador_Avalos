@@ -1,3 +1,12 @@
+"""
+ConverterFFMPEG.py
+
+This module defines the 'ConverterFFMPEG' class, which converts monophonic audio files
+(MP3 or WAV) to MusicXML scores. It uses FFmpeg to handle audio conversion and integrates
+with a Wave-to-Notes transcription tool via WSL to generate MIDI files. The resulting score
+is cleaned and simplified to single-note melodies for easier editing and visualization.
+"""
+
 import subprocess
 from converterBase import ConverterBase
 import ffmpeg
@@ -13,11 +22,38 @@ from pydub.playback import play
 import re
 
 class ConverterFFMPEG(ConverterBase):
+      """
+    Converter class that transforms audio files to MusicXML using FFmpeg and WaoN.
+
+    Inherits from 'ConverterBase' and overrides the 'Convert' method to perform
+    the following transformations:
+    1. Converts MP3 input to WAV using FFmpeg, deleting existing WAV, MIDI, or XML
+       files to avoid conflicts.
+    2. Converts the WAV file to MIDI using the Wave-to-Notes transcriber via WSL.
+    3. Cleans the MIDI score with 'CleanScore', flattening chords into single notes.
+    4. Writes the MusicXML file.
+    5. Post-processes the MusicXML to remove empty chord nodes and voice tags, ensuring
+       compatibility with the interface and piano register mapping.
+
+    Attributes:
+        max_duration (float): Maximum note/rest duration allowed when cleaning the score.
+
+    Methods:
+        Convert(file_source, file_target):
+            Performs the full audio-to-MusicXML conversion pipeline.
+        ConvertToMidi(file_source, file_target):
+            Converts a WAV file to MIDI via WaoN using WSL.
+        CleanScore(score):
+            Flattens chords to single notes and enforces maximum note/rest durations.
+        CleanInFile(file_target):
+            Post-processes the MusicXML file to remove empty chord and voice nodes.
+    """
       def __init__(self):
             super().__init__('ffmpeg')
             self.max_duration = 4.0
    
       def CleanScore(self, score):
+            """Flatten chords to single notes and limit durations of notes/rests."""
             for part in score.parts:
                   for measure in part.getElementsByClass('Measure'):
                         flat_measure = measure.flatten().notesAndRests
@@ -49,6 +85,7 @@ class ConverterFFMPEG(ConverterBase):
             return score
    
       def CleanInFile(self,file_target):
+            """Remove empty chord and voice nodes from a MusicXML file."""
             with open(file_target, 'r', encoding='utf-8') as file:
                   file_contents = file.read()
             
@@ -63,6 +100,7 @@ class ConverterFFMPEG(ConverterBase):
                   file.write(file_contents)
 
       def Convert(self, file_source, file_target):
+            """Full audio-to-MusicXML conversion pipeline, including cleaning and post-processing."""
             try:
                   file_name, file_extension = os.path.splitext(file_target)
                   # Use ffmpeg to convert MP3 to WAV
@@ -99,7 +137,7 @@ class ConverterFFMPEG(ConverterBase):
                   print("An error occurred:", e)
 
       def ConvertToMidi(self, file_source, file_target):
-           
+            """Convert WAV to MIDI using WaoN via WSL."""
             file_source = file_source.replace("C:", "/mnt/c")
             file_source = file_source.replace("\\", "/")
 
